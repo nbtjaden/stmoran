@@ -67,7 +67,8 @@ tune_CORT <- function(x){
 #'   in time series data of collective human mobility’, Geo-spatial Information
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param X a vector, containing the data values of the first time series
-#' @param Y a vector, containing the data values of the second time series
+#' @param Y a vector, of the same length as X, containing the data values
+#'   of the second time series
 #' @return an atomic vector, containing the magnitude deviation
 #' @export
 #' @examples
@@ -75,6 +76,9 @@ tune_CORT <- function(x){
 #' magnitude_deviation(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
 #'
 magnitude_deviation <- function(X, Y){
+  if(!length(X) == length(Y)){
+    stop("X and Y need to have the same length")
+  }
   sum(X) - sum(Y) # note: sum(X - Y) is equivalent but slower
 }
 
@@ -89,7 +93,8 @@ magnitude_deviation <- function(X, Y){
 #'   in time series data of collective human mobility’, Geo-spatial Information
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param X a vector, containing the data values of the first time series
-#' @param Y a vector, containing the data values of the second time series
+#' @param Y a vector, of the same length as X, containing the data values
+#'   of the second time series
 #' @return an atomic vector, containing the deviation between the two time
 #'   series
 #' @export
@@ -98,6 +103,8 @@ magnitude_deviation <- function(X, Y){
 #' ts_deviation(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
 #'
 ts_deviation <- function(X, Y){
-  #tune_CORT(CORT(X, Y)) * (sum(X) - sum(Y))
+  if(!length(X) == length(Y)){
+    stop("X and Y need to have the same length")
+  }
   tune_CORT(CORT(X, Y)) * magnitude_deviation(X, Y)
 }

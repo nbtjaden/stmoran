@@ -9,7 +9,8 @@ CORT(X, Y)
 \arguments{
 \item{X}{a vector, containing the data values of the first time series}
 
-\item{Y}{a vector, containing the data values of the second time series}
+\item{Y}{a vector, of the same length as X, containing the data values
+of the second time series}
 }
 \value{
 an atomic vector, containing the CORT value [-1,1]
