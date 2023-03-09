@@ -11,7 +11,7 @@
 #' @param X a vector, containing the data values of the first time series
 #' @param Y a vector, containing the data values of the second time series
 #'
-#' @return an atomic vector, containing the CORT value [-1,1]
+#' @return an atomic vector, containing the CORT value \[-1,1\]
 #'
 #' @examples
 #' data("EuStockMarkets")
@@ -28,7 +28,7 @@ CORT <- function(X, Y){
 
 #' Tuning function (phi) for CORT
 #'
-#' Tunes the first order correlation coefficient from [-1,1] to (0,2).
+#' Tunes the first order correlation coefficient from \[-1,1\] to (0,2).
 #' This is based on equation 5 in Gao et al. (2019).
 #'
 #' @author Nils Tjaden <n.b.tjaden@@utwente.nl>
@@ -43,7 +43,8 @@ CORT <- function(X, Y){
 #' data("EuStockMarkets")
 #' tune_CORT(CORT(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2]))
 #'
-#' plot(tune_CORT(seq(from=-1, to=1, by=.01))~seq(from=-1, to=1, by=.01), type="l", xlab="CORT value", ylab="tuned value")
+#' plot(tune_CORT(seq(from=-1, to=1, by=.01))~seq(from=-1, to=1, by=.01),
+#'  type="l", xlab="CORT value", ylab="tuned value")
 #'
 tune_CORT <- function(x){
   2 / (1 + exp(2*x))
