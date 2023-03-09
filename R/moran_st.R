@@ -5,12 +5,11 @@
 
 
 moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
-  requireNamespace(spdep)
   if (is.null(zero.policy))
     zero.policy <- get("zeroPolicy", envir = .spdepOptions)
   stopifnot(is.logical(zero.policy))
   n1 <- length(listw$neighbours)
-  w <- listw2mat(listw = listw)
+  w <- spdep::listw2mat(listw = listw)
   #x <- c(x)
   if (n1 != length(x))
     stop("objects of different length")
@@ -24,7 +23,7 @@ moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
 
   zz <- sum(z^2, na.rm = NAOK)
   K <- (length(x) * sum(z^4, na.rm = NAOK))/(zz^2)
-  lz <- lag.listw(listw, z, zero.policy = zero.policy, NAOK = NAOK)
+  lz <- spdep::lag.listw(listw, z, zero.policy = zero.policy, NAOK = NAOK)
 
   I <- (n/S0) * ((sum(z * apply(X=w, MARGIN = 1, FUN=function(x){sum(x*z)})))/zz)
 
@@ -36,7 +35,6 @@ moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
 moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
                           alternative="greater", rank = FALSE, na.action=na.fail, spChk=NULL,
                           adjust.n=TRUE, drop.EI2=FALSE) {
-  requireNamespace(spdep)
   alternative <- match.arg(alternative, c("greater", "less", "two.sided"))
   if (!inherits(listw, "listw")) stop(paste(deparse(substitute(listw)),
                                             "is not a listw object"))
@@ -45,8 +43,8 @@ moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
   if (is.null(zero.policy))
     zero.policy <- get("zeroPolicy", envir = .spdepOptions)
   stopifnot(is.logical(zero.policy))
-  if (is.null(spChk)) spChk <- get.spChkOption()
-  if (spChk && !chkIDs(t(x), listw))
+  if (is.null(spChk)) spChk <- spdep::get.spChkOption()
+  if (spChk && !spdep::chkIDs(t(x), listw))
     stop("Check of data and weights ID integrity failed")
   xname <- deparse(substitute(x))
   wname <- deparse(substitute(listw))
@@ -60,7 +58,7 @@ moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
   n <- length(listw$neighbours)
   if (n != length(x)) stop("objects of different length")
 
-  wc <- spweights.constants(listw, zero.policy=zero.policy,
+  wc <- spdep::spweights.constants(listw, zero.policy=zero.policy,
                             adjust.n=adjust.n)
   S02 <- wc$S0*wc$S0
   res <- moran_st(x, listw, wc$n, wc$S0, zero.policy=zero.policy,
@@ -85,11 +83,11 @@ moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
   statistic <- ZI
   names(statistic) <- "Moran I statistic standard deviate"
   if (alternative == "two.sided"){
-    PrI <- 2 * pnorm(abs(ZI), lower.tail=FALSE)
+    PrI <- 2 * stats::pnorm(abs(ZI), lower.tail=FALSE)
   } else {
     if (alternative == "greater"){
-      PrI <- pnorm(ZI, lower.tail=FALSE)
-    } else {PrI <- pnorm(ZI)}
+      PrI <- stats::pnorm(ZI, lower.tail=FALSE)
+    } else {PrI <- stats::pnorm(ZI)}
   }
   if (!is.finite(PrI) || PrI < 0 || PrI > 1) {
     warning("Out-of-range p-value: reconsider test arguments")
@@ -102,7 +100,7 @@ moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
                                    "using rank correction",""), "\nweights:",
                      wname, ifelse(is.null(na.act), "", paste("\nomitted:",
                                                               paste(na.act, collapse=", "))),
-                     ifelse(adjust.n && isTRUE(any(sum(card(listw$neighbours) == 0L))),
+                     ifelse(adjust.n && isTRUE(any(sum(spdep::card(listw$neighbours) == 0L))),
                             "n reduced by no-neighbour observations\n", ""),
                      ifelse(drop.EI2, "EI^2 term dropped in VI", ""), "\n")
   res <- list(statistic=statistic, p.value=PrI, estimate=vec,

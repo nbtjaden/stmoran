@@ -4,11 +4,11 @@
 # license: GPL-2 | GPL-3 [expanded from: GPL (≥ 2)]
 #
 
-
+#' @importFrom stats na.fail naresid
+#'
 localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
                           conditional=TRUE, alternative = "two.sided",
                           mlvar=TRUE, spChk=NULL, adjust.x=FALSE) {
-  requireNamespace(spdep)
   ## input checks
   #stopifnot(is.vector(x))
   if (!inherits(listw, "listw")) # check if the weight list is a weights list
@@ -20,8 +20,8 @@ localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
   if (!is.null(attr(listw$neighbours, "self.included")) &&
       attr(listw$neighbours, "self.included"))
     stop("Self included among neighbours")
-  if (is.null(spChk)) spChk <- get.spChkOption() # check IDs for data integrity?
-  if (spChk && !chkIDs(t(x), listw))
+  if (is.null(spChk)) spChk <- spdep::get.spChkOption() # check IDs for data integrity?
+  if (spChk && !spdep::chkIDs(t(x), listw))
     stop("Check of data and weights ID integrity failed")
   if (!is.numeric(unlist(x)))
     stop(paste(deparse(substitute(x)), "is not a numeric vector"))
@@ -59,7 +59,7 @@ localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
 
   # global mean time series
   if (adjust.x) { # omit values of observations with no neighbours in the mean of x
-    nc <- card(listw$neighbours) > 0L
+    nc <- spdep::card(listw$neighbours) > 0L
     xx <- rowMeans(x[nc], na.rm=NAOK)
   } else {
     xx <- rowMeans(x, na.rm=NAOK)
@@ -74,7 +74,7 @@ localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
   }
 
   # determining quadrants.
-  lz <- lag.listw(listw, z, zero.policy=zero.policy, NAOK=NAOK)
+  lz <- spdep::lag.listw(listw, z, zero.policy=zero.policy, NAOK=NAOK)
   lbs <- c("Low", "High")
   quadr <- interaction(cut(z, c(-Inf, 0, Inf), labels=lbs),
                        cut(lz, c(-Inf, 0, Inf), labels=lbs), sep="-")
@@ -151,11 +151,11 @@ localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
 
   # calculate p-values
   if (alternative == "two.sided") {
-    pv <- 2 * pnorm(abs(res[,4]), lower.tail=FALSE)
+    pv <- 2 * stats::pnorm(abs(res[,4]), lower.tail=FALSE)
   } else if (alternative == "greater") {
-    pv <- pnorm(res[,4], lower.tail=FALSE)
+    pv <- stats::pnorm(res[,4], lower.tail=FALSE)
   } else {
-    pv <- pnorm(res[,4])
+    pv <- stats::pnorm(res[,4])
   }
   res[,5] <- pv
 
