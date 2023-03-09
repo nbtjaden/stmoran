@@ -8,7 +8,7 @@
 localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
                           conditional=TRUE, alternative = "two.sided",
                           mlvar=TRUE, spChk=NULL, adjust.x=FALSE) {
-  require(spdep)
+  requireNamespace(spdep)
   ## input checks
   #stopifnot(is.vector(x))
   if (!inherits(listw, "listw")) # check if the weight list is a weights list
