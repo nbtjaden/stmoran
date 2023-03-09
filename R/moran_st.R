@@ -3,8 +3,8 @@
 # license: GPL-2 | GPL-3 [expanded from: GPL (≥ 2)]
 
 
-moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE)
-{
+moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
+  require(spdep)
   if (is.null(zero.policy))
     zero.policy <- get("zeroPolicy", envir = .spdepOptions)
   stopifnot(is.logical(zero.policy))
@@ -35,6 +35,7 @@ moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE)
 moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
                           alternative="greater", rank = FALSE, na.action=na.fail, spChk=NULL,
                           adjust.n=TRUE, drop.EI2=FALSE) {
+  require(spdep)
   alternative <- match.arg(alternative, c("greater", "less", "two.sided"))
   if (!inherits(listw, "listw")) stop(paste(deparse(substitute(listw)),
                                             "is not a listw object"))
