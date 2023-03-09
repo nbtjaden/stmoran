@@ -10,9 +10,8 @@
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param X a vector, containing the data values of the first time series
 #' @param Y a vector, containing the data values of the second time series
-#'
 #' @return an atomic vector, containing the CORT value \[-1,1\]
-#'
+#' @export
 #' @examples
 #' data("EuStockMarkets")
 #' CORT(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
@@ -36,9 +35,8 @@ CORT <- function(X, Y){
 #'   in time series data of collective human mobility’, Geo-spatial Information
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param x a vector, containing the result of CORT()
-#'
 #' @return a vector, containing the tuned value
-#'
+#' @export
 #' @examples
 #' data("EuStockMarkets")
 #' tune_CORT(CORT(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2]))
@@ -66,9 +64,8 @@ tune_CORT <- function(x){
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param X a vector, containing the data values of the first time series
 #' @param Y a vector, containing the data values of the second time series
-#'
 #' @return an atomic vector, containing the magnitude deviation
-#'
+#' @export
 #' @examples
 #' data("EuStockMarkets")
 #' magnitude_deviation(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
@@ -89,10 +86,9 @@ magnitude_deviation <- function(X, Y){
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param X a vector, containing the data values of the first time series
 #' @param Y a vector, containing the data values of the second time series
-#'
 #' @return an atomic vector, containing the deviation between the two time
 #'   series
-#'
+#' @export
 #' @examples
 #' data("EuStockMarkets")
 #' ts_deviation(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
