@@ -9,7 +9,8 @@
 #'   in time series data of collective human mobility’, Geo-spatial Information
 #'   Science, 22(3), pp. 166–173. doi:10.1080/10095020.2019.1643609.
 #' @param X a vector, containing the data values of the first time series
-#' @param Y a vector, containing the data values of the second time series
+#' @param Y a vector, of the same length as X, containing the data values
+#'   of the second time series
 #' @return an atomic vector, containing the CORT value \[-1,1\]
 #' @export
 #' @examples
@@ -17,6 +18,9 @@
 #' CORT(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
 #'
 CORT <- function(X, Y){
+  if(!length(X) == length(Y)){
+    stop("X and Y need to have the same length")
+  }
   n <- length(X)
   CORT <- sum((X[2:n] - X[1:(n-1)]) * (Y[2:n] - Y[1:(n-1)])) / (sqrt(sum((X[2:n] - X[1:(n-1)])^2)) * sqrt(sum((Y[2:n] - Y[1:(n-1)])^2)))
   if(is.nan(CORT)){
