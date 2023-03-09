@@ -18,9 +18,7 @@
 #' CORT(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
 #'
 CORT <- function(X, Y){
-  if(!length(X) == length(Y)){
-    stop("X and Y need to have the same length")
-  }
+  stopifnot(length(X)==length(Y))
   n <- length(X)
   CORT <- sum((X[2:n] - X[1:(n-1)]) * (Y[2:n] - Y[1:(n-1)])) / (sqrt(sum((X[2:n] - X[1:(n-1)])^2)) * sqrt(sum((Y[2:n] - Y[1:(n-1)])^2)))
   if(is.nan(CORT)){
@@ -76,9 +74,7 @@ tune_CORT <- function(x){
 #' magnitude_deviation(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
 #'
 magnitude_deviation <- function(X, Y){
-  if(!length(X) == length(Y)){
-    stop("X and Y need to have the same length")
-  }
+  stopifnot(length(X)==length(Y))
   sum(X) - sum(Y) # note: sum(X - Y) is equivalent but slower
 }
 
@@ -103,8 +99,6 @@ magnitude_deviation <- function(X, Y){
 #' ts_deviation(X=EuStockMarkets[ ,1], Y=EuStockMarkets[ ,2])
 #'
 ts_deviation <- function(X, Y){
-  if(!length(X) == length(Y)){
-    stop("X and Y need to have the same length")
-  }
+  stopifnot(length(X)==length(Y))
   tune_CORT(CORT(X, Y)) * magnitude_deviation(X, Y)
 }
