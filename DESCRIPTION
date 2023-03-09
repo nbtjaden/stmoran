@@ -1,12 +1,27 @@
 Package: stmoran
-Title: What the Package Does (One Line, Title Case)
+Title: Spatio-temporal global and local Moran's I
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(
+    person(
+     given   = "Nils",
+     family  = "Tjaden",
+     email   = "n.b.tjaden@utwente.nl",
+     role    = c("aut", "cre"),
+     comment = c(ORCID = "0000-0002-7685-1659")),
+    person(
+     given   = "Roger",
+     family  = "Bivand",
+     role    = "aut"),
+    person(
+     given   = "Jeff",
+     family  = "Sauer",
+     role    = "aut"),
+    person(
+     given   = "Levi",
+     family  = "Wolf",
+     role    = "aut"))
+Description: Extension to 'spdep' to include spatio-temporal versions of global and local Moran's I following Gao et al. 2019.
+License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
