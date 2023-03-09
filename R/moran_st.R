@@ -6,7 +6,7 @@
 
 moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
   if (is.null(zero.policy))
-    zero.policy <- get("zeroPolicy", envir = .spdepOptions)
+    zero.policy <- spdep::get.ZeroPolicyOption()
   stopifnot(is.logical(zero.policy))
   n1 <- length(listw$neighbours)
   w <- spdep::listw2mat(listw = listw)
@@ -41,7 +41,7 @@ moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
   if (!is.numeric(unlist(x))) stop(paste(deparse(substitute(x)),
                                          "is not a numeric vector"))
   if (is.null(zero.policy))
-    zero.policy <- get("zeroPolicy", envir = .spdepOptions)
+    zero.policy <- spdep::get.ZeroPolicyOption()
   stopifnot(is.logical(zero.policy))
   if (is.null(spChk)) spChk <- spdep::get.spChkOption()
   if (spChk && !spdep::chkIDs(t(x), listw))

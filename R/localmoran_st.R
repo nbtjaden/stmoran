@@ -14,7 +14,7 @@ localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
   if (!inherits(listw, "listw")) # check if the weight list is a weights list
     stop(paste(deparse(substitute(listw)), "is not a listw object"))
   if (is.null(zero.policy))      # if no zero policy is defined, get it from the spdep options
-    zero.policy <- get("zeroPolicy", envir = .spdepOptions)
+    zero.policy <- spdep::get.ZeroPolicyOption()
   stopifnot(is.logical(zero.policy))
   alternative <- match.arg(alternative, c("two.sided", "greater", "less")) # verify that alternative hypotheses is specified correctly
   if (!is.null(attr(listw$neighbours, "self.included")) &&
