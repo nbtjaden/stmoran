@@ -1,4 +1,5 @@
 # Based on spdep::moran by Roger Bivand Roger.Bivand@nhh.no
+# Copyright 2001-18 by Roger Bivand, 2023 Nils Tjaden (spatio-temporal adaption)
 # package version: 1.2.2
 # license: GPL-2 | GPL-3 [expanded from: GPL (≥ 2)]
 
