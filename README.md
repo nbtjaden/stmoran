@@ -41,6 +41,8 @@ library(stmoran)
 ## add examples
 ```
 
+## References
+
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-gao_measuring_2019" class="csl-entry">

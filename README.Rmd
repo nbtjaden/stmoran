@@ -45,3 +45,5 @@ The functions `moran_st` and `localmoran_st` are the spatio-temporal equivalents
 library(stmoran)
 ## add examples
 ```
+
+## References
