@@ -1,5 +1,6 @@
 ---
 output: github_document
+bibliography: bibliography.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,9 +17,10 @@ knitr::opts_chunk$set(
 # stmoran
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-The goal of stmoran is to ...
+The goal of stmoran is to make the spatio-temporal variants of global and local Moran's proposed by [@gao_measuring_2019] (spatio-temporal LISA) available in R. It borrows code from and works as an extension to Roger Bivand's `spdep` package. I put this together because I needed it: it has not undergone extensive testing and is likely to contain bugs and errors. Please let me know if you encounter any.
 
 ## Installation
 
@@ -29,27 +31,17 @@ You can install the development version of stmoran from [GitHub](https://github.
 devtools::install_github("nbtjaden/stmoran")
 ```
 
-## Example
+You will also need a working installation of `spdep`:
 
-This is a basic example which shows you how to solve a common problem:
+``` r
+install.packages("spdep")
+```
+
+## Usage
+
+The functions `moran_st` and `localmoran_st` are the spatio-temporal equivalents of `spdep::moran` and `spdep::localmoran`. The main difference in using them is that `x` is expected to be XXXX instead of YYYYYY.
 
 ```{r example}
 library(stmoran)
-## basic example code
+## add examples
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

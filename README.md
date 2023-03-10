@@ -6,7 +6,12 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of stmoran is to …
+The goal of stmoran is to make the spatio-temporal variants of global
+and local Moran’s proposed by (Gao et al. 2019) (spatio-temporal LISA)
+available in R. It borrows code from and works as an extension to Roger
+Bivand’s `spdep` package. I put this together because I needed it: it
+has not undergone extensive testing and is likely to contain bugs and
+errors. Please let me know if you encounter any.
 
 ## Installation
 
@@ -18,38 +23,33 @@ You can install the development version of stmoran from
 devtools::install_github("nbtjaden/stmoran")
 ```
 
-## Example
+You will also need a working installation of `spdep`:
 
-This is a basic example which shows you how to solve a common problem:
+``` r
+install.packages("spdep")
+```
+
+## Usage
+
+The functions `moran_st` and `localmoran_st` are the spatio-temporal
+equivalents of `spdep::moran` and `spdep::localmoran`. The main
+difference in using them is that `x` is expected to be XXXX instead of
+YYYYYY.
 
 ``` r
 library(stmoran)
-## basic example code
+## add examples
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+<div id="ref-gao_measuring_2019" class="csl-entry">
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
+Gao, Yong, Jing Cheng, Haohan Meng, and Yu Liu. 2019. “Measuring
+Spatio-Temporal Autocorrelation in Time Series Data of Collective Human
+Mobility.” *Geo-Spatial Information Science* 22 (3): 166–73.
+<https://doi.org/10.1080/10095020.2019.1643609>.
 
-You can also embed plots, for example:
+</div>
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+</div>
