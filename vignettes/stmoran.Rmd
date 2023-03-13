@@ -1,0 +1,299 @@
+---
+title: "stmoran"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{stmoran}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Setup
+
+## Load Packages
+
+Load `spdep` and `stmoran` packages. Also load `cluster` to get the `votes.repub` dataset and `spData` to get a polygon map of US states.
+
+Load packages:
+
+-   `spdep` - is needed for `stmoran` to work at all
+-   `stmoran` - this package
+-   `cluster` - provides the `votes.repub` dataset we are going to use as an example
+-   `spData` - provides polygons of US states for calculating weights and plotting
+-   `dplyr` - is used for data wrangling
+-   `ggplot2` - is used for plotting the results
+-   `gridExtra` - is used to arrange multiple plots via `grid.arrange()`
+
+```{r setup}
+library(spdep)
+library(stmoran)
+library(cluster)
+library(spData)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+```
+
+## Plot settings
+
+### Colors
+
+Define some colors we might want to use for plotting:
+
+```{r}
+myblue1 <- "#c2d7e4"
+myblue2 <- "#3f85ad"
+myred1 <- "#ff977c"
+myred2 <- "#ff4a2c"
+mypurple1 <- "#c2a5cf"
+mygreen1 <- "#a6dba0"
+NAgrey <- "grey80"
+```
+
+### ggplot2 helper functions
+
+Pre-define some plotting options to keep the code clean.
+
+```{r}
+# global plot options
+clearmap <- theme_bw()+
+theme(panel.grid = element_line(colour = "transparent"),
+axis.title.x=element_blank(),
+axis.text.x=element_blank(),
+axis.ticks.x=element_blank(),
+axis.title.y=element_blank(),
+axis.text.y=element_blank(),
+axis.ticks.y=element_blank()
+)
+
+# plot votes for a certain year
+plot_votes <- function(x, title){
+  ggplot() +
+    geom_sf(data=votes,
+            aes(fill = x),
+            col="white")+
+    scale_fill_viridis_c(name="% votes for republicans ")+
+    ggtitle(title)+
+    clearmap
+}
+
+# plot local Moran's I values
+plot_Ii <- function(x, title){
+  ggplot() +
+    geom_sf(data=votes,
+            aes(fill = x),
+            col="white")+
+    scale_fill_viridis_c(name="Ii value",
+                         limits = c(-0.1, 5))+
+    ggtitle(title)+
+    clearmap
+}
+
+# plot significance of local Moran's I
+plot_significance <- function(x, title){
+  ggplot() +
+    geom_sf(data=votes,
+            aes(fill = x),
+            col="white")+
+    scale_fill_manual(values = c(mypurple1, mygreen1),
+                      na.value = NAgrey,
+                      name = "Ii significant")+
+    ggtitle(title)+
+    clearmap
+}
+
+# plot quadrants for local Moran's I
+plot_quadrants <- function(x, title){
+  ggplot() +
+    geom_sf(data=votes,
+            aes(fill = x),
+            col="white")+
+    scale_fill_manual(values = c(myblue1, myblue2, myred1, myred2),
+                      na.value = NAgrey,
+                      name = "quadrants")+
+    ggtitle(title)+
+    clearmap
+}
+```
+
+# Get Data
+
+## US Election Data
+
+Load data about the US presidential elections 1856-1976 per state, expressed as percentage of votes for the republican party:
+
+```{r}
+data(votes.repub)
+dim(votes.repub)
+votes.repub[1:5, 1:5]
+```
+
+Extract the column names (years) for later:
+
+```{r}
+years <- names(votes.repub)
+```
+
+Explore the included US states:
+
+```{r}
+row.names(votes.repub)
+```
+
+Handling of NA is currently ToDo, for now we will just treat them as undecided and fill the missing data with 50%.
+
+```{r}
+votes.repub[is.na(votes.repub)] <- 50
+```
+
+## US State Polygons
+
+Explore the polygon data:
+
+```{r}
+str(us_states)
+```
+
+Basic plot:
+
+```{r}
+plot(us_states)
+```
+
+Note that the included States are somewhat different (Alaska is missing, for example):
+
+```{r}
+us_states$NAME
+```
+
+# Data Processing
+
+## Merge Election Data and Polygons
+
+Add state names as a data column, as well as a long-term mean value:
+
+```{r}
+votes <- cbind(NAME=row.names(votes.repub),
+               votes.repub,
+               mean=rowMeans(votes.repub))
+```
+
+Merge with the spatial data, doing an inner join to get rid of any states that are not available in both data sets:
+
+```{r}
+votes <- inner_join(x = us_states, y = votes, by = "NAME")
+str(votes)
+```
+
+Plot example map for the 1976 election:
+
+```{r}
+plot_votes(votes$"X1976", "Voting for 1976")
+```
+
+Plot a map of the 1856-1976 long-term average of election results
+
+```{r}
+plot_votes(votes$mean, "1856-1976  long-term average of election results")
+```
+
+We will also need a simple data frame for the main calculations. Use `t()` to transpose, i.e. switch rows and columns:
+
+```{r}
+votes_simple <- st_drop_geometry(votes[years]) %>% t() %>% data.frame()
+```
+
+## Spatial weights
+
+Spatial weights are calculated with standard `spdep` functions (see `spdep` documentation for details).
+
+```{r}
+neighbours <- spdep::poly2nb(votes, queen=TRUE)
+weightslist <- spdep::nb2listw(neighbours=neighbours, style="W", zero.policy = TRUE)
+```
+
+# Global Moran's I
+
+Regular global Moran's I calculated for the long-term mean of the entire period:
+
+```{r}
+I_mean <- spdep::moran.test(x = votes$mean, listw = weightslist)
+I_mean
+```
+
+Spatio-temporal global Moran's I following Gao et al. (2019), based on the time series:
+
+```{r}
+I_st <- moran.test_st(x = votes_simple, listw = weightslist)
+I_st
+```
+
+In both cases, positive I value with low p-values suggest the existence of spatial clusters. The higher I value of `I_st` shows that spatial clustering is stronger when temporal dynamics are being taken into account.
+
+# Local Moran's I (LISA)
+
+Calculate regular local Moran's I based on the long-term means of the entire study period:
+
+```{r}
+Ii_mean <- spdep::localmoran(x = votes$mean, listw = weightslist)
+```
+
+Calculate spatio-temporal local Moran's I following Gao et al. (2019), based on the time series:
+
+```{r}
+Ii_st <- localmoran_st(x = votes_simple, listw = weightslist)
+```
+
+Extract the raw Ii values:
+
+```{r}
+Ii_plt_mean <- data.frame(Ii_mean)$Ii
+Ii_plt_st <- data.frame(Ii_st)$Ii
+```
+
+Compare the results:
+
+```{r}
+grid.arrange(plot_Ii(Ii_plt_mean, title="1856-1976 mean data"),
+             plot_Ii(Ii_plt_st, title="1856-1976 time series data"))
+```
+
+From a glimpse at the maps, there seems to be some clustering going on in the South-East and maybe some more in the North-East. Keep in mind that interpretability of Ii values in non-significant areas is questionable. Let's find those areas, using a significance level of p=0.05:
+
+```{r}
+siglevel=0.05
+sig_mean <- Ii_mean[, ncol(Ii_mean)] <= siglevel
+sig_st <- Ii_st[, ncol(Ii_st)] <= siglevel
+```
+
+```{r}
+grid.arrange(plot_significance(sig_mean, title="1856-1976 mean data"),
+            plot_significance(sig_st, title="1856-1976 time seriesdata"))
+```
+
+So there seems to be *significant* clustering going on in the South-East and, to a lesser degree in the North-East.
+
+```{r}
+quadr_mean <- attr(Ii_mean, "quadr")
+quadr_mean <- ordered(quadr_mean[,"mean"], levels=c("Low-Low", "Low-High", "High-High", "High-Low"))
+quadr_st <- attr(Ii_st, "quadr")
+quadr_st <- ordered(quadr_st[,"quadr"], levels=c("Low-Low", "Low-High", "High-High", "High-Low"))
+```
+
+```{r}
+grid.arrange(plot_quadrants(quadr_mean, title="1856-1976 mean data"),
+             plot_quadrants(quadr_st, title="1856-1976 time seriesdata"))
+```
+
+```{r}
+
+
+
+plot_votes(votes$mean, "foo")
+```
