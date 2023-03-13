@@ -37,7 +37,7 @@ str(votes)
 plot(votes["X1976"])
 
 ##
-votes_reversed <- st_drop_geometry(votes[years]) %>% t() %>% data.frame()
+votes_simple <- st_drop_geometry(votes[years]) %>% t() %>% data.frame()
 ##
 
 ###
@@ -55,7 +55,7 @@ I_1976
 I_mean <- moran.test(x = votes$mean, listw = weightslist)
 I_mean
 
-I_st <- moran.test_st(x = votes_reversed, listw = weightslist)
+I_st <- moran.test_st(x = votes_simple, listw = weightslist)
 I_st
 
 
@@ -87,7 +87,7 @@ axis.ticks.y=element_blank()
 # test local I
 
 Ii_mean <- localmoran(x = votes$mean, listw = weightslist)
-Ii_st <- localmoran_st(x = votes_reversed, listw = weightslist)
+Ii_st <- localmoran_st(x = votes_simple, listw = weightslist)
 
 ##########################################
 
