@@ -31,28 +31,28 @@ votes$NAME <- gsub("\\.", " ", votes$NAME)
 
 
 ## spatialize
-votes_st <- inner_join(x = us_states, y = votes, by = "NAME")
+votes <- inner_join(x = us_states, y = votes, by = "NAME")
 
-str(votes_st)
-plot(votes_st["X1976"])
+str(votes)
+plot(votes["X1976"])
 
 ##
-votes_reversed <- st_drop_geometry(votes_st[years]) %>% t() %>% data.frame()
+votes_reversed <- st_drop_geometry(votes[years]) %>% t() %>% data.frame()
 ##
 
 ###
-neighbours <- spdep::poly2nb(votes_st, queen=TRUE)
+neighbours <- spdep::poly2nb(votes, queen=TRUE)
 weightslist <- nb2listw(neighbours=neighbours, style="W", zero.policy = TRUE)
 ###
 
 
 ##########
 # test global I
-I_1976 <- moran.test(x = votes_st$X1976, listw = weightslist)
+I_1976 <- moran.test(x = votes$X1976, listw = weightslist)
 I_1976
 
 
-I_mean <- moran.test(x = votes_st$mean, listw = weightslist)
+I_mean <- moran.test(x = votes$mean, listw = weightslist)
 I_mean
 
 I_st <- moran.test_st(x = votes_reversed, listw = weightslist)
@@ -86,7 +86,7 @@ axis.ticks.y=element_blank()
 ##########
 # test local I
 
-Ii_mean <- localmoran(x = votes_st$mean, listw = weightslist)
+Ii_mean <- localmoran(x = votes$mean, listw = weightslist)
 Ii_st <- localmoran_st(x = votes_reversed, listw = weightslist)
 
 ##########################################
@@ -96,7 +96,7 @@ Ii_plt_st <- data.frame(Ii_st)$Ii
 
 plot_Ii <- function(x, title){
   ggplot() +
-    geom_sf(data=votes_st,
+    geom_sf(data=votes,
             aes(fill = x),
             col="white")+
     scale_fill_viridis_c(name="Ii value",
@@ -117,7 +117,7 @@ sig_st <- Ii_st[, ncol(Ii_st)] <= siglevel
 
 plot_significance <- function(x, title){
   ggplot() +
-    geom_sf(data=votes_st,
+    geom_sf(data=votes,
             aes(fill = x),
             col="white")+
     scale_fill_manual(values = c(mypurple1, mygreen1),
@@ -139,7 +139,7 @@ quadr_st <- ordered(quadr_st[,"quadr"], levels=c("Low-Low", "Low-High", "High-Hi
 
 plot_quadrants <- function(x, title){
   ggplot() +
-    geom_sf(data=votes_st,
+    geom_sf(data=votes,
             aes(fill = x),
             col="white")+
     scale_fill_manual(values = c(myblue1, myblue2, myred1, myred2),
