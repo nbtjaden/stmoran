@@ -200,7 +200,7 @@ plot_votes(votes$"X1976", "Voting for 1976")
 Plot a map of the 1856-1976 long-term average of election results
 
 ```{r}
-plot_votes(votes$mean, "1856-1976  long-term average of election results")
+plot_votes(votes$mean, "1856-1976 long-term average of election results")
 ```
 
 We will also need a simple data frame for the main calculations. Use `t()` to transpose, i.e. switch rows and columns:
