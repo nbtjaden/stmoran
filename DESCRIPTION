@@ -1,6 +1,6 @@
 Package: stmoran
 Title: Spatio-temporal global and local Moran's I
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(
     person(
      given   = "Nils",
