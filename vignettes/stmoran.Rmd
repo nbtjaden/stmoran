@@ -114,7 +114,20 @@ plot_quadrants <- function(x, title){
     geom_sf(data=votes,
             aes(fill = x),
             col="white")+
-    scale_fill_manual(values = c(myblue1, myblue2, myred1, myred2),
+    scale_fill_manual(values = c("Low-Low"=myblue2, "Low-High"=myblue1, "High-High"=myred2, "High-Low"=myred1),
+                      na.value = NAgrey,
+                      name = "quadrants")+
+    ggtitle(title)+
+    clearmap
+}
+
+# plot only significant quadrants
+plot_quadrants_sigonly <- function(x, y, title){
+  ggplot() +
+    geom_sf(data=votes,
+            aes(fill = x),
+            col="white")+
+    scale_fill_manual(values = c("Low-Low"=myblue2, "Low-High"=myblue1, "High-High"=myred2, "High-Low"=myred1, "n.s."=NAgrey),
                       na.value = NAgrey,
                       name = "quadrants")+
     ggtitle(title)+
@@ -274,10 +287,10 @@ sig_st <- Ii_st[, ncol(Ii_st)] <= siglevel
 
 ```{r}
 grid.arrange(plot_significance(sig_mean, title="1856-1976 mean data"),
-            plot_significance(sig_st, title="1856-1976 time seriesdata"))
+            plot_significance(sig_st, title="1856-1976 time series data"))
 ```
 
-So there seems to be *significant* clustering going on in the South-East and, to a lesser degree in the North-East.
+So there seems to be *significant* clustering going on in the South-East and, to a lesser degree in the North-East. That doesn't tell us much about the underlying data, though. The `spdep::localmoran()` function as well as `localmopran_st()` already the information in which quadrant of the *Moran scatterplot* a data point is located. Extract that data:
 
 ```{r}
 quadr_mean <- attr(Ii_mean, "quadr")
@@ -286,14 +299,32 @@ quadr_st <- attr(Ii_st, "quadr")
 quadr_st <- ordered(quadr_st[,"quadr"], levels=c("Low-Low", "Low-High", "High-High", "High-Low"))
 ```
 
+Plot it:
+
 ```{r}
 grid.arrange(plot_quadrants(quadr_mean, title="1856-1976 mean data"),
-             plot_quadrants(quadr_st, title="1856-1976 time seriesdata"))
+             plot_quadrants(quadr_st, title="1856-1976 time series data"))
 ```
+
+In the South-East, there is a large Low-Low cluster (low values surrounded by other low values). In this case, both maps are identical, suggesting that time does not play a major role for clustering in this data set. Remember, however, that the maps of statistical significance above showed some differences. It would probably be a good idea to mask out non-significant states to avoid interpreting non-significant results.
+
+Add a new level to the \`quadr\` factors for "not significant:
 
 ```{r}
+quadr_mean_sigonly <- quadr_mean
+levels(quadr_mean_sigonly) <- c(levels(quadr_mean_sigonly), "n.s.")
+quadr_mean_sigonly[!sig_mean] <- "n.s."
 
-
-
-plot_votes(votes$mean, "foo")
+quadr_st_sigonly <- quadr_st
+levels(quadr_st_sigonly) <- c(levels(quadr_st_sigonly), "n.s.")
+quadr_st_sigonly[!sig_st] <- "n.s."
 ```
+
+Plot the maps again, this time only showing significant clusters:
+
+```{r}
+grid.arrange(plot_quadrants_sigonly(x=quadr_mean_sigonly, title="1856-1976 mean data"),
+             plot_quadrants_sigonly(x=quadr_st_sigonly, title="1856-1976 time series data"))
+```
+
+Now it is much easier to see that there is a large cluster of disapproval for the republican party in the South-East and a smaller cluster of high approval in the North-East. However, the spatio-temporal analyses suggests that these clusters might be smaller than assumed when only using long-term average data. Especially in the North, they may not be persistent in time.
