@@ -29,7 +29,7 @@
 #'   on to the foreign function. If 'FALSE', the presence of 'NA' or 'NaN' or
 #'   'Inf' values is regarded as an error.
 #' @returns  A list: `I` spatio-temporal Moran's I `K` sample kurtosis of x
-#' @examples
+#'
 moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
   if (is.null(zero.policy))
     zero.policy <- spdep::get.ZeroPolicyOption()
@@ -103,7 +103,7 @@ moran_st <- function (x, listw, n, S0, zero.policy = NULL, NAOK = FALSE){
 #' @returns `method`	a character string giving the assumption used for
 #'   calculating the standard deviate.
 #' @returns `data.name` a character string giving the name(s) of the data.
-#' @examples
+#'
 moran.test_st <- function(x, listw, randomisation=TRUE, zero.policy=NULL,
                           alternative="greater", rank = FALSE, na.action=na.fail, spChk=NULL,
                           adjust.n=TRUE, drop.EI2=FALSE) {

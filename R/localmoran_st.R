@@ -80,7 +80,6 @@
 #' @returns In addition, an attribute data frame "quadr" indicating the
 #'   High-High etc. quadrants
 #'
-#' @examples
 localmoran_st <- function(x, listw, zero.policy=NULL, na.action=na.fail,
                           conditional=TRUE, alternative = "two.sided",
                           mlvar=TRUE, spChk=NULL, adjust.x=FALSE) {
