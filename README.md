@@ -31,15 +31,19 @@ install.packages("spdep")
 
 ## Usage
 
-The functions `moran_st` and `localmoran_st` are the spatio-temporal
-equivalents of `spdep::moran` and `spdep::localmoran`. The main
-difference in using them is that `x` is expected to be XXXX instead of
-YYYYYY.
+The functions `moran.test_st` and `localmoran_st` are the
+spatio-temporal equivalents of `spdep::moran.test` and
+`spdep::localmoran`. The main difference in using them is that `x` is
+expected to be a matrix/data.frame of time series of observations at
+different locations (instead of just a vector of observations at
+different locations). Load the package with:
 
 ``` r
 library(stmoran)
-## add examples
 ```
+
+Please refer to `stmoran.html` in the `./vignettes/` directory for an
+example on how to use `stmoran`
 
 ## References
 
