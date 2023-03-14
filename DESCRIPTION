@@ -29,5 +29,10 @@ Imports:
     spdep
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    cluster,
+    dplyr,
+    ggplot2,
+    gridExtra,
+    spData
 VignetteBuilder: knitr
