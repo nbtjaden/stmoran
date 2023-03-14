@@ -42,7 +42,7 @@ different locations). Load the package with:
 library(stmoran)
 ```
 
-Please refer to `stmoran.html` in the `./vignettes/` directory for an
+Please refer to `stmoran.Rmd` in the `./vignettes/` directory for an
 example on how to use `stmoran`
 
 ## References
